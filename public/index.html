@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Sync - Long Distance Gaming</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎲 Dice Sync</h1>
+            <p>Real-time dice rolling for long-distance gaming</p>
+            <div class="status">
+                <span id="userCount">0</span> players connected
+            </div>
+        </header>
+
+        <div class="player-section">
+            <label for="playerName">Your Name:</label>
+            <input type="text" id="playerName" placeholder="Enter your name" maxlength="20">
+        </div>
+
+        <div class="dice-section">
+            <div class="dice-container">
+                <div class="dice" id="dice">
+                    <div class="dice-face" id="diceFace">?</div>
+                </div>
+                <button id="rollButton" class="roll-button">Roll Dice</button>
+            </div>
+            
+            <div class="last-roll" id="lastRoll">
+                <p>Click "Roll Dice" to start!</p>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h3>Recent Rolls</h3>
+            <div class="roll-history" id="rollHistory">
+                <p class="no-history">No rolls yet...</p>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>How to Play</h3>
+            <ul>
+                <li>Enter your name above</li>
+                <li>Click "Roll Dice" to generate a random number (1-6)</li>
+                <li>Your roll will instantly appear on all connected players' screens</li>
+                <li>Perfect for board games, RPGs, or any dice-based games played remotely!</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
