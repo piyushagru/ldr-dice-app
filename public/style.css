@@ -32,7 +32,7 @@ body {
 }
 
 .status {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     padding: 8px 16px;
     border-radius: 20px;
     backdrop-filter: blur(10px);
@@ -43,27 +43,38 @@ body {
 
 /* Stats Panel */
 .stats-panel {
-    background: rgba(255,255,255,0.95);
-    border-radius: 15px;
-    padding: 15px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    min-width: 220px;
-    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 180px;
+    font-size: 0.75rem;
 }
 
 .stats-header {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 8px;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.2s ease;
+    z-index: 35;
+    position: relative;
+}
+
+.stats-header:hover {
+    opacity: 0.7;
 }
 
 .stats-content {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    z-index: 25;
+    position: relative;
 }
 
 .stat-item {
@@ -73,34 +84,35 @@ body {
 }
 
 .stat-label {
-    color: #666;
-    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.7rem;
+    font-weight: 400;
 }
 
 .stat-value {
-    color: #333;
-    font-weight: 600;
-    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 0.75rem;
 }
 
 .distribution {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid #eee;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .dist-header {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 8px;
-    font-size: 0.8rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 6px;
+    font-size: 0.7rem;
 }
 
 .dist-bars {
     display: flex;
-    gap: 4px;
+    gap: 2px;
     align-items: end;
-    height: 40px;
+    height: 25px;
 }
 
 .dist-bar {
@@ -108,13 +120,13 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 1px;
 }
 
 .dist-bar span {
-    font-size: 0.7rem;
-    color: #666;
-    font-weight: 500;
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 400;
 }
 
 .bar {
@@ -138,6 +150,8 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
+    position: relative;
+    z-index: 10;
 }
 
 .dice-container {
@@ -146,6 +160,8 @@ body {
     align-items: center;
     justify-content: center;
     margin-bottom: 30px;
+    position: relative;
+    z-index: 20;
 }
 
 .big-dice {
@@ -156,6 +172,7 @@ body {
     cursor: pointer;
     user-select: none;
     transition: all 0.3s ease;
+    z-index: 30;
 }
 
 .big-dice:hover {
@@ -239,15 +256,45 @@ body {
 .face-3 .dot:nth-child(2) { align-self: center; }
 .face-3 .dot:last-child { align-self: flex-end; }
 
-.face-4 { justify-content: space-between; align-items: stretch; flex-direction: column; padding: 30px; }
-.face-4 .row { display: flex; justify-content: space-between; }
+.face-4 { 
+    justify-content: space-between; 
+    align-items: stretch; 
+    flex-direction: column; 
+    padding: 30px; 
+}
+.face-4 .row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
 
-.face-5 { justify-content: space-between; align-items: stretch; flex-direction: column; padding: 30px; }
-.face-5 .row { display: flex; justify-content: space-between; }
-.face-5 .center { justify-content: center; }
+.face-5 { 
+    justify-content: space-between; 
+    align-items: stretch; 
+    flex-direction: column; 
+    padding: 30px; 
+}
+.face-5 .row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
+.face-5 .row.center { 
+    justify-content: center; 
+    align-items: center;
+}
 
-.face-6 { justify-content: space-between; align-items: stretch; flex-direction: column; padding: 30px; }
-.face-6 .row { display: flex; justify-content: space-between; }
+.face-6 { 
+    justify-content: space-between; 
+    align-items: stretch; 
+    flex-direction: column; 
+    padding: 30px; 
+}
+.face-6 .row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
 
 .last-roll {
     margin-top: 20px;
@@ -412,28 +459,423 @@ body {
     margin-top: 2px;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
+/* Mobile-first responsive design */
+@media (max-width: 480px) {
+    /* Small phones */
+    .main-container {
+        padding: 5px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    /* Center area takes most space */
+    .center-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 10px;
+    }
+    
+    .dice-container {
+        gap: 15px;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
     .big-dice {
-        width: 150px;
-        height: 150px;
+        width: 140px;
+        height: 140px;
     }
     
     .dice-face {
-        font-size: 4.5rem;
+        width: 140px;
+        height: 140px;
+        border-radius: 18px;
+        font-size: 3rem;
+    }
+    
+    .dice-face.front { transform: rotateY(0deg) translateZ(70px); }
+    .dice-face.back { transform: rotateY(180deg) translateZ(70px); }
+    .dice-face.right { transform: rotateY(90deg) translateZ(70px); }
+    .dice-face.left { transform: rotateY(-90deg) translateZ(70px); }
+    .dice-face.top { transform: rotateX(90deg) translateZ(70px); }
+    .dice-face.bottom { transform: rotateX(-90deg) translateZ(70px); }
+    
+    .dot {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .face-1 .dot { 
+        width: 20px; 
+        height: 20px; 
+    }
+    
+    .face-2, .face-3 { 
+        padding: 20px; 
+    }
+    
+    .face-4 { 
+        padding: 20px; 
+    }
+    
+    .face-5 { 
+        padding: 20px; 
+    }
+    
+    .face-6 { 
+        padding: 20px; 
     }
     
     .last-roll {
-        min-width: 250px;
+        min-width: 90%;
+        max-width: 320px;
+        margin: 0 auto;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .roll-value {
+        font-size: 1.5rem;
+    }
+    
+    /* Bottom controls fixed at bottom */
+    .bottom-controls {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 20px);
+        max-width: 350px;
+        gap: 8px;
+        z-index: 20;
+    }
+    
+    #playerName {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        min-width: auto;
+    }
+    
+    .dice-selector {
+        padding: 6px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .dice-option {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        flex: 1;
+        justify-content: center;
+    }
+    
+    /* Stats panel - top right, compact, completely behind dice on mobile */
+    .top-bar {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        left: auto;
+        bottom: auto;
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-end;
+        z-index: 15;
+    }
+    
+    .stats-panel {
+        z-index: 15;
+    }
+    
+    .stats-header {
+        z-index: 35;
+        position: relative;
+    }
+    
+    .status {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+        border-radius: 12px;
+    }
+    
+    .stats-panel {
+        min-width: 120px;
+        padding: 4px;
+        font-size: 0.6rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 6px;
+    }
+    
+    .stats-header {
+        font-size: 0.65rem;
+        margin-bottom: 3px;
+    }
+    
+    .stats-content {
+        gap: 2px;
+    }
+    
+    .stat-item {
+        gap: 2px;
+    }
+    
+    .stat-label {
+        font-size: 0.55rem;
+    }
+    
+    .stat-value {
+        font-size: 0.6rem;
+    }
+    
+    .distribution {
+        margin-top: 3px;
+        padding-top: 3px;
+    }
+    
+    .dist-header {
+        font-size: 0.55rem;
+        margin-bottom: 2px;
+    }
+    
+    .dist-bars {
+        height: 12px;
+        gap: 1px;
+    }
+    
+    .dist-bar span {
+        font-size: 0.45rem;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    /* Tablets and larger phones */
+    .dice-container {
+        gap: 30px;
+    }
+    
+    .big-dice {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .dice-face {
+        width: 160px;
+        height: 160px;
+        border-radius: 18px;
+    }
+    
+    .dice-face.front { transform: rotateY(0deg) translateZ(80px); }
+    .dice-face.back { transform: rotateY(180deg) translateZ(80px); }
+    .dice-face.right { transform: rotateY(90deg) translateZ(80px); }
+    .dice-face.left { transform: rotateY(-90deg) translateZ(80px); }
+    .dice-face.top { transform: rotateX(90deg) translateZ(80px); }
+    .dice-face.bottom { transform: rotateX(-90deg) translateZ(80px); }
+    
+    .dot {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .face-1 .dot { 
+        width: 22px; 
+        height: 22px; 
+    }
+    
+    .face-2, .face-3 { 
+        padding: 24px; 
+    }
+    
+    .face-4 { 
+        padding: 24px; 
+    }
+    
+    .face-5 { 
+        padding: 24px; 
+    }
+    
+    .face-6 { 
+        padding: 24px; 
+    }
+    
+    .last-roll {
+        min-width: 300px;
         margin: 15px;
     }
     
     .bottom-controls {
-        bottom: 20px;
+        bottom: 25px;
     }
     
     #playerName {
-        min-width: 180px;
+        min-width: 220px;
+    }
+    
+    .stats-panel {
+        min-width: 200px;
+        padding: 13px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* Desktop and large tablets */
+    .dice-container {
+        gap: 40px;
+    }
+    
+    .big-dice {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .dice-face {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .dice-face.front { transform: rotateY(0deg) translateZ(90px); }
+    .dice-face.back { transform: rotateY(180deg) translateZ(90px); }
+    .dice-face.right { transform: rotateY(90deg) translateZ(90px); }
+    .dice-face.left { transform: rotateY(-90deg) translateZ(90px); }
+    .dice-face.top { transform: rotateX(90deg) translateZ(90px); }
+    .dice-face.bottom { transform: rotateX(-90deg) translateZ(90px); }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+    /* Touch devices */
+    .big-dice {
+        cursor: pointer;
+    }
+    
+    .big-dice:hover {
+        transform: none; /* Remove hover effects on touch */
+    }
+    
+    .big-dice:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+    }
+    
+    .dice-option {
+        padding: 12px 16px; /* Larger touch targets */
+    }
+    
+    #playerName {
+        padding: 14px 20px; /* Larger touch target */
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .main-container {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .center-area {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .dice-container {
+        flex-direction: row;
+        gap: 20px;
+    }
+    
+    .big-dice {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .dice-face {
+        width: 100px;
+        height: 100px;
+        border-radius: 12px;
+    }
+    
+    .dice-face.front { transform: rotateY(0deg) translateZ(50px); }
+    .dice-face.back { transform: rotateY(180deg) translateZ(50px); }
+    .dice-face.right { transform: rotateY(90deg) translateZ(50px); }
+    .dice-face.left { transform: rotateY(-90deg) translateZ(50px); }
+    .dice-face.top { transform: rotateX(90deg) translateZ(50px); }
+    .dice-face.bottom { transform: rotateX(-90deg) translateZ(50px); }
+    
+    .dot {
+        width: 12px;
+        height: 12px;
+    }
+    
+    .face-1 .dot { 
+        width: 14px; 
+        height: 14px; 
+    }
+    
+    .face-2, .face-3 { 
+        padding: 15px; 
+    }
+    
+    .face-4 { 
+        padding: 15px; 
+    }
+    
+    .face-5 { 
+        padding: 15px; 
+    }
+    
+    .face-6 { 
+        padding: 15px; 
+    }
+    
+    .last-roll {
+        min-width: 250px;
+        padding: 10px 15px;
+        font-size: 0.85rem;
+    }
+    
+    .roll-value {
+        font-size: 1.2rem;
+    }
+    
+    .bottom-controls {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        transform: none;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    #playerName {
+        min-width: 150px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .dice-selector {
+        padding: 4px;
+    }
+    
+    .dice-option {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+    
+    .stats-panel {
+        min-width: 160px;
+        padding: 10px;
+        font-size: 0.7rem;
+    }
+    
+    .top-bar {
+        top: 10px;
+        right: 10px;
     }
 }
 
