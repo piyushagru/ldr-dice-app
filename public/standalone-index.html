@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Sync</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <!-- Top Status Bar -->
+        <div class="top-bar">
+            <div class="status">
+                <span id="userCount">0</span> players connected
+            </div>
+            <div class="stats-panel" id="statsPanel">
+                <div class="stats-header">📊 Nerd Stats</div>
+                <div class="stats-content">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Rolls:</span>
+                        <span class="stat-value" id="totalRolls">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Randomness:</span>
+                        <span class="stat-value" id="randomnessScore">100%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Most Rolled:</span>
+                        <span class="stat-value" id="mostRolled">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Least Rolled:</span>
+                        <span class="stat-value" id="leastRolled">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Avg Roll:</span>
+                        <span class="stat-value" id="avgRoll">3.5</span>
+                    </div>
+                    <div class="distribution">
+                        <div class="dist-header">Distribution:</div>
+                        <div class="dist-bars">
+                            <div class="dist-bar" data-value="1"><span>1</span><div class="bar" id="bar1"></div></div>
+                            <div class="dist-bar" data-value="2"><span>2</span><div class="bar" id="bar2"></div></div>
+                            <div class="dist-bar" data-value="3"><span>3</span><div class="bar" id="bar3"></div></div>
+                            <div class="dist-bar" data-value="4"><span>4</span><div class="bar" id="bar4"></div></div>
+                            <div class="dist-bar" data-value="5"><span>5</span><div class="bar" id="bar5"></div></div>
+                            <div class="dist-bar" data-value="6"><span>6</span><div class="bar" id="bar6"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Dice Area -->
+        <div class="center-area">
+            <div class="dice-container" id="diceContainer">
+                <!-- First Dice -->
+                <div class="big-dice" id="dice1">
+                    <!-- Face 1 (front) -->
+                    <div class="dice-face front face-1">
+                        <div class="dot"></div>
+                    </div>
+                    
+                    <!-- Face 2 (right) -->
+                    <div class="dice-face right face-2">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    
+                    <!-- Face 3 (back) -->
+                    <div class="dice-face back face-3">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    
+                    <!-- Face 4 (left) -->
+                    <div class="dice-face left face-4">
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Face 5 (top) -->
+                    <div class="dice-face top face-5">
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="row center">
+                            <div class="dot"></div>
+                        </div>
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Face 6 (bottom) -->
+                    <div class="dice-face bottom face-6">
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second Dice -->
+                <div class="big-dice" id="dice2" style="display: none;">
+                    <!-- Face 1 (front) -->
+                    <div class="dice-face front face-1">
+                        <div class="dot"></div>
+                    </div>
+                    
+                    <!-- Face 2 (right) -->
+                    <div class="dice-face right face-2">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    
+                    <!-- Face 3 (back) -->
+                    <div class="dice-face back face-3">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    
+                    <!-- Face 4 (left) -->
+                    <div class="dice-face left face-4">
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Face 5 (top) -->
+                    <div class="dice-face top face-5">
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="row center">
+                            <div class="dot"></div>
+                        </div>
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Face 6 (bottom) -->
+                    <div class="dice-face bottom face-6">
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="row">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="last-roll" id="lastRoll">
+                <p>Click the dice to roll!</p>
+            </div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="bottom-controls">
+            <input type="text" id="playerName" placeholder="Your name" maxlength="20">
+            
+            <div class="dice-selector">
+                <label class="dice-option">
+                    <input type="radio" name="numDice" value="1" checked>
+                    <span>1 Die</span>
+                </label>
+                <label class="dice-option">
+                    <input type="radio" name="numDice" value="2">
+                    <span>2 Dice</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Hidden Roll History (can be toggled) -->
+        <div class="roll-history" id="rollHistory" style="display: none;">
+        </div>
+    </div>
+
+    <script src="standalone-script.js"></script>
+</body>
+</html>

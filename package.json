@@ -1,0 +1,20 @@
+{
+  "name": "dice-sync-app",
+  "version": "1.0.0",
+  "description": "Real-time synchronized dice rolling app for long-distance gaming",
+  "main": "server.js",
+  "scripts": {
+    "start": "node standalone-server.js",
+    "dev": "node standalone-server.js"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2"
+  },
+  "keywords": ["dice", "game", "realtime", "websocket"],
+  "author": "",
+  "license": "MIT"
+}
