@@ -15,13 +15,13 @@ let playerName = '';
 let isRolling = false;
 
 // Stats tracking
-let rollStats = {
+const rollStats = {
     totalRolls: 0,
     distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
     allRolls: []
 };
 
-// Dice face patterns (using dots)
+// Dice face patterns (using Unicode dice symbols)
 const diceFaces = {
     1: '⚀',
     2: '⚁',
@@ -29,6 +29,16 @@ const diceFaces = {
     4: '⚃',
     5: '⚄',
     6: '⚅'
+};
+
+// 3D Dice face rotations to show specific numbers
+const diceRotations = {
+    1: 'rotateX(0deg) rotateY(0deg)',      // front face
+    2: 'rotateX(0deg) rotateY(-90deg)',    // right face  
+    3: 'rotateX(0deg) rotateY(-180deg)',   // back face
+    4: 'rotateX(0deg) rotateY(90deg)',     // left face
+    5: 'rotateX(-90deg) rotateY(0deg)',    // top face
+    6: 'rotateX(90deg) rotateY(0deg)'      // bottom face
 };
 
 // Initialize SSE connection
@@ -185,16 +195,6 @@ function rollDice() {
     }, 1200);
 }
 
-// 3D Dice face rotations to show specific numbers
-const diceRotations = {
-    1: 'rotateX(0deg) rotateY(0deg)',      // front face
-    2: 'rotateX(0deg) rotateY(-90deg)',    // right face  
-    3: 'rotateX(0deg) rotateY(-180deg)',   // back face
-    4: 'rotateX(0deg) rotateY(90deg)',     // left face
-    5: 'rotateX(-90deg) rotateY(0deg)',    // top face
-    6: 'rotateX(90deg) rotateY(0deg)'      // bottom face
-};
-
 // Update dice display
 function updateDiceDisplay(rolls, total, numDice, rolledBy, timestamp) {
     // Handle both single value (legacy) and array of rolls
@@ -300,7 +300,6 @@ document.addEventListener('keydown', (e) => {
 
 // Update stats with new rolls
 function updateStats(rolls) {
-    // Handle both single value and array
     const rollArray = Array.isArray(rolls) ? rolls : [rolls];
     
     // Add each individual dice roll to stats
@@ -310,7 +309,6 @@ function updateStats(rolls) {
         rollStats.allRolls.push(roll);
     });
     
-    // Update the stats display
     updateStatsDisplay();
 }
 
@@ -362,6 +360,22 @@ function updateStatsDisplay() {
         bar.title = `${i}: ${counts[i]} rolls (${((counts[i] / rollStats.totalRolls) * 100).toFixed(1)}%)`;
     }
 }
+
+// Stats panel collapse functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const statsHeader = document.querySelector('.stats-header');
+    const statsContent = document.querySelector('.stats-content');
+    
+    if (statsHeader && statsContent) {
+        statsHeader.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            const isCollapsed = statsContent.style.display === 'none';
+            statsContent.style.display = isCollapsed ? 'flex' : 'none';
+            statsHeader.textContent = isCollapsed ? 'Stats' : 'Stats +';
+        });
+    }
+});
 
 // Initialize SSE connection when page loads
 connectSSE();
