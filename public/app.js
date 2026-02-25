@@ -33,13 +33,153 @@ const diceFaces = {
 
 // 3D Dice face rotations to show specific numbers
 const diceRotations = {
-    1: 'rotateX(0deg) rotateY(0deg)',      // front face
-    2: 'rotateX(0deg) rotateY(-90deg)',    // right face  
-    3: 'rotateX(0deg) rotateY(-180deg)',   // back face
-    4: 'rotateX(0deg) rotateY(90deg)',     // left face
-    5: 'rotateX(-90deg) rotateY(0deg)',    // top face
-    6: 'rotateX(90deg) rotateY(0deg)'      // bottom face
+    1: { x: 0, y: 0, z: 0 },      // front face
+    2: { x: 0, y: -90, z: 0 },    // right face  
+    3: { x: 0, y: -180, z: 0 },   // back face
+    4: { x: 0, y: 90, z: 0 },     // left face
+    5: { x: -90, y: 0, z: 0 },    // top face
+    6: { x: 90, y: 0, z: 0 }      // bottom face
 };
+
+// Current dice states (track what face is currently showing)
+let currentDiceStates = {
+    dice1: 1, // Start with face 1 showing
+    dice2: 1
+};
+
+// Calculate optimal rotation path from current state to desired state
+function calculateRotationPath(currentFace, targetFace) {
+    const current = diceRotations[currentFace];
+    const target = diceRotations[targetFace];
+    
+    // Calculate the shortest rotation path for each axis
+    const deltaX = target.x - current.x;
+    const deltaY = target.y - current.y;
+    const deltaZ = target.z - current.z;
+    
+    // Normalize rotations to avoid unnecessary full rotations
+    const normalizeRotation = (delta) => {
+        if (delta > 180) return delta - 360;
+        if (delta < -180) return delta + 360;
+        return delta;
+    };
+    
+    return {
+        x: normalizeRotation(deltaX),
+        y: normalizeRotation(deltaY),
+        z: normalizeRotation(deltaZ)
+    };
+}
+
+// Create dynamic CSS animation for state transition
+function createStateTransitionAnimation(diceElement, currentFace, targetFace, animationName) {
+    const path = calculateRotationPath(currentFace, targetFace);
+    const current = diceRotations[currentFace];
+    const target = diceRotations[targetFace];
+    
+    // Create keyframes for smooth tumbling transition
+    const keyframes = `
+        @keyframes ${animationName} {
+            0% { 
+                transform: rotateX(${current.x}deg) rotateY(${current.y}deg) rotateZ(${current.z}deg) scale(1);
+            }
+            25% { 
+                transform: rotateX(${current.x + path.x * 0.3}deg) rotateY(${current.y + path.y * 0.3}deg) rotateZ(${current.z + path.z * 0.3}deg) scale(1.02);
+            }
+            50% { 
+                transform: rotateX(${current.x + path.x * 0.6}deg) rotateY(${current.y + path.y * 0.6}deg) rotateZ(${current.z + path.z * 0.6}deg) scale(1.05);
+            }
+            75% { 
+                transform: rotateX(${current.x + path.x * 0.85}deg) rotateY(${current.y + path.y * 0.85}deg) rotateZ(${current.z + path.z * 0.85}deg) scale(1.03);
+            }
+            100% { 
+                transform: rotateX(${target.x}deg) rotateY(${target.y}deg) rotateZ(${target.z}deg) scale(1);
+            }
+        }
+    `;
+    
+    // Inject the keyframes into the document
+    const styleSheet = document.createElement('style');
+    styleSheet.textContent = keyframes;
+    document.head.appendChild(styleSheet);
+    
+    // Clean up the style sheet after animation
+    setTimeout(() => {
+        document.head.removeChild(styleSheet);
+    }, 1000);
+    
+    return animationName;
+}
+
+// Generate randomized tumbling path with intermediate states
+function generateRandomTumblingPath(currentFace, targetFace) {
+    const path = [currentFace];
+    
+    // Add 2-3 random intermediate faces for realistic tumbling
+    const numIntermediateStates = Math.floor(Math.random() * 2) + 2; // 2-3 states
+    
+    for (let i = 0; i < numIntermediateStates; i++) {
+        let randomFace;
+        do {
+            randomFace = Math.floor(Math.random() * 6) + 1;
+        } while (randomFace === path[path.length - 1]); // Avoid consecutive same faces
+        
+        path.push(randomFace);
+    }
+    
+    // Ensure we end on the target face
+    if (path[path.length - 1] !== targetFace) {
+        path.push(targetFace);
+    }
+    
+    return path;
+}
+
+// FIXED: Clean physics-based dice animation - no unnecessary rotations
+function animateDiceWithPhysics(diceElement, diceKey, targetFace) {
+    const currentFace = currentDiceStates[diceKey];
+    
+    if (currentFace === targetFace) {
+        // Already at target state, just ensure correct transform
+        const target = diceRotations[targetFace];
+        diceElement.style.transform = `rotateX(${target.x}deg) rotateY(${target.y}deg) rotateZ(${target.z}deg)`;
+        return Promise.resolve();
+    }
+    
+    // Calculate optimal rotation path from current to target
+    const currentRotation = diceRotations[currentFace];
+    const targetRotation = diceRotations[targetFace];
+    
+    // FIXED: Use the calculated optimal path directly - no random extra rotations
+    const path = calculateRotationPath(currentFace, targetFace);
+    
+    // Add ONE controlled tumble for realism (not random chaos)
+    const tumbleAmount = 360; // Single controlled rotation for visual appeal
+    let finalX = targetRotation.x + tumbleAmount;
+    let finalY = targetRotation.y + tumbleAmount;
+    let finalZ = targetRotation.z;
+    
+    // Create smooth animation using the optimal path
+    return anime({
+        targets: diceElement,
+        rotateX: finalX,
+        rotateY: finalY,
+        rotateZ: finalZ,
+        scale: [1, 1.1, 1], // Keep the nice bounce effect
+        duration: 800, // Consistent timing
+        easing: 'easeOutElastic(1, .6)',
+        complete: () => {
+            // CRITICAL: Set final state correctly (without extra rotations)
+            diceElement.style.transform = `rotateX(${targetRotation.x}deg) rotateY(${targetRotation.y}deg) rotateZ(${targetRotation.z}deg)`;
+            currentDiceStates[diceKey] = targetFace;
+        }
+    }).finished;
+}
+
+// Apply physics-based transition to dice
+function transitionDiceToState(diceElement, diceKey, targetFace) {
+    return animateDiceWithPhysics(diceElement, diceKey, targetFace);
+}
 
 // Initialize SSE connection
 function connectSSE() {
@@ -93,20 +233,15 @@ function handleMessage(type, data) {
             const isOwnRoll = data.rolledBy === playerName;
             
             if (isOwnRoll && isRolling) {
-                // Delay the display update until after the rolling animation completes
-                setTimeout(() => {
-                    updateDiceDisplay(data.rolls, data.total, data.numDice, data.rolledBy, data.timestamp);
-                    
-                    // Add visual feedback for new roll after the animation
-                    dice1.classList.add('new-roll');
-                    if (data.numDice === 2) {
-                        dice2.classList.add('new-roll');
-                    }
-                    setTimeout(() => {
-                        dice1.classList.remove('new-roll');
-                        dice2.classList.remove('new-roll');
-                    }, 800);
-                }, 1200); // Match the rolling animation duration
+                // Store the result to apply after animation completes
+                window.pendingDiceResult = {
+                    rolls: data.rolls,
+                    total: data.total,
+                    numDice: data.numDice,
+                    rolledBy: data.rolledBy,
+                    timestamp: data.timestamp
+                };
+                // The result will be applied when the animation completes in rollDice()
             } else {
                 // For other players' rolls or when not rolling, update immediately
                 updateDiceDisplay(data.rolls, data.total, data.numDice, data.rolledBy, data.timestamp);
@@ -195,12 +330,20 @@ diceContainer.addEventListener('click', () => {
 
 // Roll dice function
 function rollDice() {
+    if (isRolling) return; // Prevent multiple rolls
+    
     isRolling = true;
+    
+    // Clear any pending result
+    window.pendingDiceResult = null;
     
     // Get selected number of dice
     const numDice = parseInt(document.querySelector('input[name="numDice"]:checked').value);
     
-    // Add rolling animation to active dice
+    // Disable dice container to prevent clicks during animation (Android-style)
+    diceContainer.style.pointerEvents = 'none';
+    
+    // Android-style sequential animation: First phase (200ms)
     dice1.classList.add('rolling');
     if (numDice === 2) {
         dice2.classList.add('rolling');
@@ -209,16 +352,57 @@ function rollDice() {
     // Send roll request to server
     sendRollRequest(playerName, numDice);
     
-    // Reset after animation
+    // Android-style sequential animation: Second phase after 200ms
     setTimeout(() => {
-        isRolling = false;
         dice1.classList.remove('rolling');
-        dice2.classList.remove('rolling');
-    }, 1200);
+        dice1.classList.add('rolling-fast');
+        
+        if (numDice === 2) {
+            dice2.classList.remove('rolling');
+            dice2.classList.add('rolling-fast');
+        }
+        
+        // Clean up after fast animation (100ms)
+        setTimeout(() => {
+            dice1.classList.remove('rolling-fast');
+            dice2.classList.remove('rolling-fast');
+            
+            // Apply the pending result immediately after animation ends
+            if (window.pendingDiceResult) {
+                const result = window.pendingDiceResult;
+                
+                // Apply the result immediately with smooth transition
+                updateDiceDisplay(result.rolls, result.total, result.numDice, result.rolledBy, result.timestamp);
+                
+                // Add new-roll pulse effect after a brief moment
+                setTimeout(() => {
+                    dice1.classList.add('new-roll');
+                    if (result.numDice === 2) {
+                        dice2.classList.add('new-roll');
+                    }
+                    setTimeout(() => {
+                        dice1.classList.remove('new-roll');
+                        dice2.classList.remove('new-roll');
+                    }, 600);
+                }, 50);
+                
+                // Clear the pending result
+                window.pendingDiceResult = null;
+            }
+            
+            isRolling = false;
+            // Re-enable dice container after 2 seconds (Android-style)
+            setTimeout(() => {
+                diceContainer.style.pointerEvents = 'auto';
+            }, 1700); // Total 2 seconds like Android app
+            
+        }, 100); // Fast animation duration
+    }, 200); // First animation duration
 }
 
-// Update dice display
-function updateDiceDisplay(rolls, total, numDice, rolledBy, timestamp) {
+
+// Smooth dice display update with transition
+function updateDiceDisplaySmooth(rolls, total, numDice, rolledBy, timestamp) {
     // Handle both single value (legacy) and array of rolls
     if (typeof rolls === 'number') {
         // Legacy single dice display - rotate to show the correct face
@@ -250,6 +434,52 @@ function updateDiceDisplay(rolls, total, numDice, rolledBy, timestamp) {
             // Two dice
             dice1.style.transform = diceRotations[rolls[0]];
             dice2.style.transform = diceRotations[rolls[1]];
+            dice2.style.display = 'block';
+            
+            lastRoll.innerHTML = `
+                <p><strong>${rollText}</strong> rolled <span class="roll-value">[${rolls.join(', ')}] = ${total}</span></p>
+                <small>at ${timestamp}</small>
+            `;
+        }
+    }
+    
+    const isOwnRoll = rolledBy === playerName;
+    lastRoll.className = `last-roll ${isOwnRoll ? 'own-roll' : 'other-roll'}`;
+}
+
+// Update dice display with state-based transitions
+function updateDiceDisplay(rolls, total, numDice, rolledBy, timestamp) {
+    // Handle both single value (legacy) and array of rolls
+    if (typeof rolls === 'number') {
+        // Legacy single dice display - use state transition
+        transitionDiceToState(dice1, 'dice1', rolls);
+        dice2.style.display = 'none';
+        
+        const isOwnRoll = rolledBy === playerName;
+        const rollText = isOwnRoll ? 'You' : rolledBy;
+        
+        lastRoll.innerHTML = `
+            <p><strong>${rollText}</strong> rolled <span class="roll-value">${rolls}</span></p>
+            <small>at ${timestamp}</small>
+        `;
+    } else {
+        // Multiple dice display - use state transitions for both dice
+        const isOwnRoll = rolledBy === playerName;
+        const rollText = isOwnRoll ? 'You' : rolledBy;
+        
+        if (numDice === 1) {
+            // Single dice
+            transitionDiceToState(dice1, 'dice1', rolls[0]);
+            dice2.style.display = 'none';
+            
+            lastRoll.innerHTML = `
+                <p><strong>${rollText}</strong> rolled <span class="roll-value">${rolls[0]}</span></p>
+                <small>at ${timestamp}</small>
+            `;
+        } else {
+            // Two dice - transition both to their target states
+            transitionDiceToState(dice1, 'dice1', rolls[0]);
+            transitionDiceToState(dice2, 'dice2', rolls[1]);
             dice2.style.display = 'block';
             
             lastRoll.innerHTML = `
