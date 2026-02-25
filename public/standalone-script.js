@@ -89,21 +89,43 @@ function handleMessage(type, data) {
             break;
             
         case 'diceRolled':
-            updateDiceDisplay(data.rolls, data.total, data.numDice, data.rolledBy, data.timestamp);
+            // Check if this is our own roll and we're currently rolling
+            const isOwnRoll = data.rolledBy === playerName;
+            
+            if (isOwnRoll && isRolling) {
+                // Delay the display update until after the rolling animation completes
+                setTimeout(() => {
+                    updateDiceDisplay(data.rolls, data.total, data.numDice, data.rolledBy, data.timestamp);
+                    
+                    // Add visual feedback for new roll after the animation
+                    dice1.classList.add('new-roll');
+                    if (data.numDice === 2) {
+                        dice2.classList.add('new-roll');
+                    }
+                    setTimeout(() => {
+                        dice1.classList.remove('new-roll');
+                        dice2.classList.remove('new-roll');
+                    }, 800);
+                }, 1200); // Match the rolling animation duration
+            } else {
+                // For other players' rolls or when not rolling, update immediately
+                updateDiceDisplay(data.rolls, data.total, data.numDice, data.rolledBy, data.timestamp);
+                
+                // Add visual feedback for new roll
+                dice1.classList.add('new-roll');
+                if (data.numDice === 2) {
+                    dice2.classList.add('new-roll');
+                }
+                setTimeout(() => {
+                    dice1.classList.remove('new-roll');
+                    dice2.classList.remove('new-roll');
+                }, 800);
+            }
+            
             updateRollHistory(data.rollHistory);
             
             // Update stats for all rolls (including other players)
             updateStats(data.rolls);
-            
-            // Add visual feedback for new roll
-            dice1.classList.add('new-roll');
-            if (data.numDice === 2) {
-                dice2.classList.add('new-roll');
-            }
-            setTimeout(() => {
-                dice1.classList.remove('new-roll');
-                dice2.classList.remove('new-roll');
-            }, 800);
             break;
     }
 }
