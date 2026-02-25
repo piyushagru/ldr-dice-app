@@ -2,10 +2,10 @@
   "name": "dice-sync-app",
   "version": "1.0.0",
   "description": "Real-time synchronized dice rolling app for long-distance gaming",
-  "main": "standalone-server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node standalone-server.js",
-    "dev": "node standalone-server.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "engines": {
     "node": "18.x"

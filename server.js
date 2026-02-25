@@ -146,11 +146,11 @@ function startServer(port) {
     // Serve static files
     let filePath;
     if (pathname === '/') {
-      filePath = '/public/standalone-index.html';
+      filePath = '/public/index.html';
     } else if (pathname.startsWith('/public/')) {
       filePath = pathname;
     } else {
-      // For files like style.css, standalone-script.js, serve from public directory
+      // For files like style.css, app.js, serve from public directory
       filePath = '/public' + pathname;
     }
     
