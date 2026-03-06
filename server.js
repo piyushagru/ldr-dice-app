@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
+const { randomInt } = require('crypto');
 
 // Game state
 let gameState = {
@@ -95,7 +96,7 @@ function startServer(port) {
           const rolls = [];
           let total = 0;
           for (let i = 0; i < numDice; i++) {
-            const roll = Math.floor(Math.random() * 6) + 1;
+            const roll = randomInt(1, 7); // crypto CSPRNG, 1–6 inclusive
             rolls.push(roll);
             total += roll;
           }
