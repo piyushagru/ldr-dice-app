@@ -266,42 +266,83 @@ body {
     align-items: center;
 }
 
-.last-roll {
+/* ─── Roll Feed widget ────────────────────────────────────────────────────── */
+.roll-feed {
     margin-top: 20px;
-    padding: 15px 25px;
-    border-radius: 15px;
+    width: 380px;
+    max-width: 90vw;
+    border-radius: 14px;
+    overflow: hidden;
     background: rgba(255,255,255,0.9);
     backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    min-width: 300px;
 }
 
-.last-roll.own-roll {
-    background: rgba(232, 245, 232, 0.95);
-    border-left: 4px solid #28a745;
+.feed-placeholder {
+    padding: 16px 20px;
+    color: #888;
+    font-size: 0.95rem;
+    text-align: center;
 }
 
-.last-roll.other-roll {
-    background: rgba(232, 244, 253, 0.95);
-    border-left: 4px solid #17a2b8;
+.feed-row {
+    display: grid;
+    grid-template-columns: 18px 90px 1fr auto auto;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    transition: opacity 0.4s ease;
 }
 
-.last-roll p {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-    font-weight: 500;
+.feed-row:last-child {
+    border-bottom: none;
 }
 
-.roll-value {
-    font-size: 1.8rem;
-    font-weight: bold;
+.feed-row.feed-slide-in {
+    animation: feedSlideIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes feedSlideIn {
+    from { transform: translateX(24px); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+}
+
+.feed-arrow {
+    font-size: 0.85rem;
+    color: #28a745;
+    font-weight: 700;
+    text-align: center;
+}
+
+.feed-player {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.feed-symbols {
+    font-size: 1.25rem;
+    letter-spacing: 2px;
+}
+
+.feed-value {
+    font-size: 1rem;
+    font-weight: 700;
     color: #667eea;
+    text-align: right;
+    white-space: nowrap;
 }
 
-.last-roll small {
-    color: #666;
-    font-size: 0.9rem;
+.feed-time {
+    font-size: 0.7rem;
+    color: #999;
+    white-space: nowrap;
+    text-align: right;
+    min-width: 58px;
 }
 
 /* Bottom Controls */
