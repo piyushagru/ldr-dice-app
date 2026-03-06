@@ -28,11 +28,14 @@ Open `http://localhost:3000` in two browser tabs to test sync.
 
 1. Push your code to GitHub
 2. Create a new project on [railway.app](https://railway.app) → **Deploy from GitHub repo**
-3. Railway auto-detects the `Procfile` and runs `node server.js`
-4. No environment variables needed — port is set automatically via `$PORT`
+3. Railway detects the `Dockerfile` and builds a Docker image from it
+4. The `CMD` in the Dockerfile is what starts the app `node server.js`
+5. No environment variables needed port is set automatically via `$PORT`
 
+```dockerfile
+CMD ["node", "server.js"]   ← Dockerfile (this is what Railway runs)
 ```
-web: node server.js   ← Procfile
-```
+
+> **Note:** The `Procfile` is only used when there is no `Dockerfile`. Since this project has a `Dockerfile`, the `Procfile` is ignored by Railway.
 
 That's it! Enjoy! GG!
