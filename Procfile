@@ -1,1 +1,1 @@
-web: node standalone-server.js
+web: node server.js
