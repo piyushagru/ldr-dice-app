@@ -8,7 +8,6 @@ const dice2            = document.getElementById('dice2');
 const wrapper1         = document.getElementById('wrapper1');
 const wrapper2         = document.getElementById('wrapper2');
 const diceContainer    = document.getElementById('diceContainer');
-const lastRoll         = document.getElementById('lastRoll');
 const rollHistory      = document.getElementById('rollHistory');
 const userCount        = document.getElementById('userCount');
 
@@ -141,8 +140,8 @@ async function animateAndReveal(rolls, total, numDice, rolledBy, timestamp) {
 
   await Promise.all(animations);
 
-  // Show result text after dice settle
-  showResultText(rolls, total, numDice, rolledBy, timestamp);
+  // Push to feed after dice settle
+  window.RollFeed.push(rolls, total, numDice, rolledBy, timestamp, playerName);
 
   // Subtle pulse on the wrapper (safe — no preserve-3d)
   pulseEffect(wrapper1);
@@ -155,21 +154,6 @@ function pulseEffect(wrapperEl) {
   void wrapperEl.offsetWidth;
   wrapperEl.classList.add('result-pulse');
   setTimeout(() => wrapperEl.classList.remove('result-pulse'), 500);
-}
-
-// ─── Result text ──────────────────────────────────────────────────────────────
-function showResultText(rolls, total, numDice, rolledBy, timestamp) {
-  const isOwn     = rolledBy === playerName;
-  const byLabel   = isOwn ? 'You' : rolledBy;
-  const rollLabel = numDice === 1
-    ? `<span class="roll-value">${rolls[0]}</span>`
-    : `<span class="roll-value">[${rolls.join(', ')}] = ${total}</span>`;
-
-  lastRoll.innerHTML = `
-    <p><strong>${byLabel}</strong> rolled ${rollLabel}</p>
-    <small>at ${timestamp}</small>
-  `;
-  lastRoll.className = `last-roll ${isOwn ? 'own-roll' : 'other-roll'}`;
 }
 
 // ─── Full update path (own + other players) ───────────────────────────────────
@@ -218,7 +202,7 @@ function handleMessage(type, data) {
         });
         if (data.rollHistory && data.rollHistory.length > 0) {
           const last = data.rollHistory[0];
-          showResultText(r, last.total, r.length, data.rolledBy, data.timestamp);
+          window.RollFeed.push(r, last.total, r.length, data.rolledBy, data.timestamp, playerName);
           updateRollHistory(data.rollHistory);
         }
       }
