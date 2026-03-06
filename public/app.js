@@ -1,4 +1,4 @@
- // ─── SSE connection ───────────────────────────────────────────────────────────
+// ─── SSE connection ───────────────────────────────────────────────────────────
 let eventSource;
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
@@ -18,13 +18,6 @@ let isRolling  = false;
 
 // What face (1-6) is currently showing on each die
 let currentFace = { dice1: 1, dice2: 1 };
-
-// ─── Stats ────────────────────────────────────────────────────────────────────
-const rollStats = {
-  totalRolls: 0,
-  distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
-  allRolls: []
-};
 
 // ─── Dice geometry ────────────────────────────────────────────────────────────
 // rotateX / rotateY values that bring each face to the front
@@ -324,48 +317,9 @@ function updateRollHistory(history) {
   }).join('');
 }
 
-// ─── Stats ────────────────────────────────────────────────────────────────────
+// ─── Stats — delegated to stats.js (window.Stats) ────────────────────────────
 function updateStats(rolls) {
-  const arr = Array.isArray(rolls) ? rolls : [rolls];
-  arr.forEach(r => {
-    rollStats.totalRolls++;
-    rollStats.distribution[r]++;
-    rollStats.allRolls.push(r);
-  });
-  updateStatsDisplay();
-}
-
-function updateStatsDisplay() {
-  document.getElementById('totalRolls').textContent = rollStats.totalRolls;
-  if (rollStats.totalRolls === 0) return;
-
-  const sum = rollStats.allRolls.reduce((a, b) => a + b, 0);
-  document.getElementById('avgRoll').textContent =
-    (sum / rollStats.allRolls.length).toFixed(2);
-
-  const counts   = rollStats.distribution;
-  const maxCount = Math.max(...Object.values(counts));
-  const nonZero  = Object.values(counts).filter(c => c > 0);
-  const minCount = nonZero.length ? Math.min(...nonZero) : 0;
-
-  document.getElementById('mostRolled').textContent =
-    Object.keys(counts).filter(k => counts[k] === maxCount).join(', ') + ` (${maxCount}x)`;
-  document.getElementById('leastRolled').textContent =
-    nonZero.length
-      ? Object.keys(counts).filter(k => counts[k] === minCount && counts[k] > 0).join(', ') + ` (${minCount}x)`
-      : '-';
-
-  const expected = rollStats.totalRolls / 6;
-  let chi = 0;
-  for (let i = 1; i <= 6; i++) chi += Math.pow(counts[i] - expected, 2) / expected;
-  document.getElementById('randomnessScore').textContent =
-    Math.max(0, Math.min(100, 100 - chi * 2)).toFixed(1) + '%';
-
-  for (let i = 1; i <= 6; i++) {
-    const bar = document.getElementById(`bar${i}`);
-    bar.style.height = Math.max(2, (counts[i] / maxCount) * 100) + '%';
-    bar.title = `${i}: ${counts[i]} rolls`;
-  }
+  window.Stats.update(rolls);
 }
 
 // ─── Event listeners ──────────────────────────────────────────────────────────
@@ -399,20 +353,6 @@ document.addEventListener('keydown', e => {
 // Enter in name field → focus dice
 playerNameInput.addEventListener('keypress', e => {
   if (e.key === 'Enter') diceContainer.focus();
-});
-
-// Stats panel collapse
-document.addEventListener('DOMContentLoaded', () => {
-  const header  = document.querySelector('.stats-header');
-  const content = document.querySelector('.stats-content');
-  if (header && content) {
-    header.addEventListener('click', e => {
-      e.stopPropagation();
-      const collapsed = content.style.display === 'none';
-      content.style.display = collapsed ? 'flex' : 'none';
-      header.textContent    = collapsed ? 'Stats' : 'Stats +';
-    });
-  }
 });
 
 // ─── Init ─────────────────────────────────────────────────────────────────────

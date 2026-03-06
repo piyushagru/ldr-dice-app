@@ -95,51 +95,27 @@ body {
     font-size: 0.75rem;
 }
 
-.distribution {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.dist-header {
-    font-weight: 500;
-    color: #212121;
-    margin-bottom: 6px;
+/* Randomness / Balance bar */
+.randomness-pct {
     font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
 }
 
-.dist-bars {
-    display: flex;
-    gap: 2px;
-    align-items: end;
-    height: 25px;
-}
-
-.dist-bar {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1px;
-}
-
-.dist-bar span {
-    font-size: 0.6rem;
-    color: #666;
-    font-weight: 400;
-}
-
-.bar {
+.randomness-bar-track {
     width: 100%;
-    background: #212121;
-    border-radius: 2px 2px 0 0;
-    min-height: 2px;
-    transition: height 0.3s ease;
-    opacity: 0.8;
+    height: 6px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 3px 0 6px;
 }
 
-.bar:hover {
-    opacity: 1;
+.randomness-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 4px;
+    transition: width 0.5s ease, background-color 0.5s ease;
 }
 
 /* Center Dice Area */

@@ -24,8 +24,11 @@
                         <span class="stat-value" id="totalRolls">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Randomness:</span>
-                        <span class="stat-value" id="randomnessScore">100%</span>
+                        <span class="stat-label">Balance</span>
+                        <span class="randomness-pct" id="randomnessPct">–</span>
+                    </div>
+                    <div class="randomness-bar-track">
+                        <div class="randomness-bar-fill" id="randomnessFill"></div>
                     </div>
                     <div class="stat-item">
                         <span class="stat-label">Most Rolled:</span>
@@ -38,17 +41,6 @@
                     <div class="stat-item">
                         <span class="stat-label">Avg Roll:</span>
                         <span class="stat-value" id="avgRoll">3.5</span>
-                    </div>
-                    <div class="distribution">
-                        <div class="dist-header">Distribution:</div>
-                        <div class="dist-bars">
-                            <div class="dist-bar" data-value="1"><span>1</span><div class="bar" id="bar1"></div></div>
-                            <div class="dist-bar" data-value="2"><span>2</span><div class="bar" id="bar2"></div></div>
-                            <div class="dist-bar" data-value="3"><span>3</span><div class="bar" id="bar3"></div></div>
-                            <div class="dist-bar" data-value="4"><span>4</span><div class="bar" id="bar4"></div></div>
-                            <div class="dist-bar" data-value="5"><span>5</span><div class="bar" id="bar5"></div></div>
-                            <div class="dist-bar" data-value="6"><span>6</span><div class="bar" id="bar6"></div></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -216,6 +208,7 @@
         </div>
     </div>
 
+    <script src="widget/stats.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
