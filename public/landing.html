@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a14">
+    <title>SpiceDice — Roll Together</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="landing-body">
+    <div class="landing-card">
+        <h1 class="landing-title">SpiceDice</h1>
+        <p class="landing-subtitle">Real-time synchronized dice rolling.<br>Open a Pit and share the link with your friends.</p>
+
+        <button id="createRoomBtn" class="landing-btn landing-btn-primary">Open a Pit</button>
+
+        <div class="landing-divider"><span>or drop into an existing one</span></div>
+
+        <form id="joinForm" class="landing-join">
+            <input type="text" id="joinRoomId" class="landing-input" placeholder="Pit code (e.g. xk4p2m)"
+                   maxlength="12" autocomplete="off" spellcheck="false">
+            <button type="submit" class="landing-btn">Join</button>
+        </form>
+        <p id="joinError" class="landing-error" style="display: none;"></p>
+    </div>
+
+    <script>
+      const createBtn = document.getElementById('createRoomBtn');
+      const joinForm  = document.getElementById('joinForm');
+      const joinInput = document.getElementById('joinRoomId');
+      const joinError = document.getElementById('joinError');
+
+      const ROOM_ID_PATTERN = /^[a-z0-9]{4,12}$/;
+
+      createBtn.addEventListener('click', async () => {
+        createBtn.disabled = true;
+        try {
+          const res = await fetch('/api/rooms', { method: 'POST' });
+          if (!res.ok) throw new Error('Server error');
+          const { roomId } = await res.json();
+          window.location.href = `/r/${roomId}`;
+        } catch (err) {
+          createBtn.disabled = false;
+          showError('Could not open a Pit. Please try again.');
+        }
+      });
+
+      joinForm.addEventListener('submit', e => {
+        e.preventDefault();
+        // Accept either a bare room code or a pasted room link
+        let value = joinInput.value.trim().toLowerCase();
+        const linkMatch = value.match(/\/r\/([a-z0-9]+)/);
+        if (linkMatch) value = linkMatch[1];
+
+        if (!ROOM_ID_PATTERN.test(value)) {
+          showError('Pit codes are 4–12 letters or digits.');
+          return;
+        }
+        window.location.href = `/r/${value}`;
+      });
+
+      function showError(msg) {
+        joinError.textContent = msg;
+        joinError.style.display = 'block';
+      }
+    </script>
+</body>
+</html>

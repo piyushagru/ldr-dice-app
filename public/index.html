@@ -2,23 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#667eea">
-    <title>Dice Sync - 3D Dice Rolling</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#0a0a14">
+    <title>SpiceDice — Roll Together</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="main-container">
+        <!-- Sticky mode-selector bar -->
+        <nav class="mode-bar" id="modeBar" aria-label="Game mode">
+            <button type="button" class="mode-btn" data-mode="free" aria-pressed="true">Free Roll</button>
+            <button type="button" class="mode-btn" data-mode="catan" aria-pressed="false">Catan</button>
+            <button type="button" class="mode-btn" data-mode="cities-knights" aria-pressed="false">Cities &amp; Knights</button>
+        </nav>
+
         <!-- Top Status Bar -->
         <div class="top-bar">
             <div class="status">
                 <span id="userCount">0</span> players connected
             </div>
-            <div class="stats-panel" id="statsPanel">
-                <div class="stats-header">Stats</div>
-                <div class="stats-content">
+            <div class="status room-bar">
+                Pit <strong id="roomCode"></strong>
+                <button id="shareBtn" class="share-btn" title="Copy Pit link">Copy link</button>
+            </div>
+            <div class="stats-panel stats-collapsed" id="statsPanel">
+                <div class="stats-header" role="button" tabindex="0" aria-expanded="false" aria-controls="statsContent">Stats <span class="stats-chevron">▾</span></div>
+                <div class="stats-content" id="statsContent">
                     <div class="stat-item">
                         <span class="stat-label">Total Rolls:</span>
                         <span class="stat-value" id="totalRolls">0</span>
@@ -181,6 +194,15 @@
                 </div>
                 </div><!-- /wrapper2 -->
             </div>
+
+            <!-- Result cards for non-d6 dice (replaces 3D dice when active) -->
+            <div class="card-container" id="cardContainer" style="display: none;"></div>
+
+            <!-- Roll total banner (sum + modifier, Catan highlight) -->
+            <div class="roll-total" id="rollTotal" style="display: none;"></div>
+
+            <!-- Cities & Knights barbarian-ship callout -->
+            <div class="event-callout" id="eventCallout" style="display: none;">Barbarians advance!</div>
             
             <div class="roll-feed" id="roll-feed">
                 <div class="feed-placeholder">Click the dice to roll!</div>
@@ -190,17 +212,40 @@
         <!-- Bottom Controls -->
         <div class="bottom-controls">
             <input type="text" id="playerName" placeholder="Your name" maxlength="20">
-            
-            <div class="dice-selector">
-                <label class="dice-option">
-                    <input type="radio" name="numDice" value="1" checked>
-                    <span>1 Die</span>
+
+            <div class="dice-selector" id="diceTypeSelector">
+                <label class="dice-option"><input type="radio" name="diceType" value="4"><span>d4</span></label>
+                <label class="dice-option"><input type="radio" name="diceType" value="6" checked><span>d6</span></label>
+                <label class="dice-option"><input type="radio" name="diceType" value="8"><span>d8</span></label>
+                <label class="dice-option"><input type="radio" name="diceType" value="10"><span>d10</span></label>
+                <label class="dice-option"><input type="radio" name="diceType" value="12"><span>d12</span></label>
+                <label class="dice-option"><input type="radio" name="diceType" value="20"><span>d20</span></label>
+                <label class="dice-option"><input type="radio" name="diceType" value="100"><span>d100</span></label>
+            </div>
+
+            <div class="roll-config" id="rollConfig">
+                <label class="config-field">
+                    <span>Dice</span>
+                    <select id="diceCount">
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
                 </label>
-                <label class="dice-option">
-                    <input type="radio" name="numDice" value="2">
-                    <span>2 Dice</span>
+                <label class="config-field">
+                    <span>Modifier</span>
+                    <input type="number" id="diceModifier" value="0" min="-99" max="99" step="1">
                 </label>
             </div>
+
+            <button type="button" id="gameRollBtn" class="game-roll-btn" style="display: none;">Roll</button>
         </div>
 
         <!-- Hidden Roll History (can be toggled) -->
@@ -208,8 +253,8 @@
         </div>
     </div>
 
-    <script src="widget/stats.js"></script>
-    <script src="widget/roll-feed.js"></script>
-    <script src="app.js"></script>
+    <script src="/widget/stats.js"></script>
+    <script src="/widget/roll-feed.js"></script>
+    <script src="/app.js"></script>
 </body>
 </html>

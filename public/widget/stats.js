@@ -71,18 +71,33 @@ window.Stats = (() => {
     fillEl.style.backgroundColor = color;
   }
 
-  // Stats panel collapse toggle
+  // Stats panel collapse toggle — collapsed by default, choice persisted
+  const OPEN_KEY = 'spicediceStatsOpen';
+  if (localStorage.getItem(OPEN_KEY) === null && (localStorage.getItem('spicydiceStatsOpen') ?? localStorage.getItem('clattrStatsOpen')) !== null) localStorage.setItem(OPEN_KEY, localStorage.getItem('spicydiceStatsOpen') ?? localStorage.getItem('clattrStatsOpen'));
+
   document.addEventListener('DOMContentLoaded', () => {
-    const header  = document.querySelector('.stats-header');
-    const content = document.querySelector('.stats-content');
-    if (header && content) {
-      header.addEventListener('click', e => {
-        e.stopPropagation();
-        const collapsed = content.style.display === 'none';
-        content.style.display = collapsed ? 'flex' : 'none';
-        header.textContent    = collapsed ? 'Stats' : 'Stats +';
-      });
+    const panel  = document.getElementById('statsPanel');
+    const header = panel && panel.querySelector('.stats-header');
+    if (!panel || !header) return;
+
+    function setOpen(open) {
+      panel.classList.toggle('stats-collapsed', !open);
+      header.setAttribute('aria-expanded', String(open));
+      localStorage.setItem(OPEN_KEY, open ? '1' : '0');
     }
+
+    setOpen(localStorage.getItem(OPEN_KEY) === '1');
+
+    header.addEventListener('click', e => {
+      e.stopPropagation();
+      setOpen(panel.classList.contains('stats-collapsed'));
+    });
+    header.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        setOpen(panel.classList.contains('stats-collapsed'));
+      }
+    });
   });
 
   return { update };

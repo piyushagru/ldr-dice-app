@@ -1,20 +1,17 @@
 {
-  "name": "dice-sync-app",
+  "name": "spicedice",
   "version": "1.0.0",
-  "description": "Real-time synchronized dice rolling app for long-distance gaming",
+  "description": "SpiceDice: A real-time synchronized dice rolling for long-distance gaming. Crypto-fair rolls, shareable Pits, SSE sync.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "test": "node --test"
   },
   "engines": {
     "node": "18.x"
   },
-  "dependencies": {
-    "express": "^4.18.2",
-    "socket.io": "^4.7.2"
-  },
-  "keywords": ["dice", "game", "realtime", "websocket", "3d", "mobile"],
+  "keywords": ["dice", "game", "realtime", "sse", "3d", "mobile"],
   "author": "",
   "license": "MIT"
 }

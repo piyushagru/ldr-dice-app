@@ -1,0 +1,17 @@
+(library
+ (name engine)
+ (modules engine))
+
+(executable
+ (name bridge)
+ (modules bridge)
+ (libraries engine js_of_ocaml)
+ (modes js))
+
+(rule
+ (targets pipworks_ocaml.js)
+ (deps bridge.bc.js)
+ (action
+  (copy bridge.bc.js pipworks_ocaml.js))
+ (mode
+  (promote (until-clean))))
