@@ -8,3 +8,5 @@ npm-debug.log
 coverage
 .DS_Store
 *.log
+ocaml/_build
+ocaml/pipworks_ocaml.js
