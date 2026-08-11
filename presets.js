@@ -7,7 +7,7 @@ const PRESETS = {
     spec: { count: 2, sides: 6, modifier: 0 },
     highlightTotal: 7
   },
-  // Barbarian Beacon — Catan Cities & Knights: red + yellow production dice
+  // Barbarian Beacon, Catan Cities & Knights: red + yellow production dice
   // plus the event die (third d6, mapped to faces below).
   'cities-knights': {
     name: 'Cities & Knights',

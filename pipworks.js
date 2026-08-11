@@ -1,4 +1,4 @@
-// ─── PipWorks — the SpiceDice dice engine ───────────────────────────────────────
+// ─── PipWorks: the SpiceDice dice engine ───────────────────────────────────────
 // Server-authoritative dice logic: notation parsing, validation and
 // crypto-fair rolling (crypto.randomInt CSPRNG). Framework-free, no I/O.
 // Backed by the js_of_ocaml build in ocaml/ when the compiled artifact is

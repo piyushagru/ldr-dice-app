@@ -1,6 +1,6 @@
 /* ─── SpiceDice design tokens ─────────────────────────────────────────────────
    Futuristic dark theme: deep background, purple–blue gradient accents,
-   glass panels, glow on interactives. Canonical palette — change here only. */
+   glass panels, glow on interactives. Canonical palette, change here only. */
 :root {
     --bg-0: #0a0a14;
     --bg-1: #12111f;
@@ -37,7 +37,7 @@
     --font-mono: 'JetBrains Mono', 'SF Mono', 'Courier New', monospace;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
-    /* Die geometry — media queries scale the cube by overriding these only.
+    /* Die geometry: media queries scale the cube by overriding these only.
        Face transforms derive translateZ from --die-size, so the T2
        face-rotation math is identical at every breakpoint. */
     --die-size: 200px;
@@ -296,7 +296,7 @@ body {
     border-color: var(--die-yellow-border);
 }
 
-/* Wrapper handles visual feedback — never touch filter/transform on preserve-3d */
+/* Wrapper handles visual feedback; never touch filter/transform on preserve-3d */
 .dice-wrapper {
     position: relative;
     cursor: pointer;
@@ -329,7 +329,7 @@ body {
     position: relative;
     transform-style: preserve-3d;
     user-select: none;
-    /* JS owns transform entirely — no CSS transition on transform */
+    /* JS owns transform entirely, no CSS transition on transform */
     z-index: 30;
 }
 
@@ -746,7 +746,7 @@ body {
     .feed-value { font-size: 0.9rem; }
     .feed-time { font-size: 0.65rem; min-width: auto; }
 
-    /* In-flow at the bottom of the column — cannot overlap the dice */
+    /* In-flow at the bottom of the column, cannot overlap the dice */
     .bottom-controls {
         position: static;
         transform: none;
@@ -786,7 +786,7 @@ body {
         gap: 8px;
     }
 
-    /* In-flow pill row under the mode bar — floating it over the dice column
+    /* In-flow pill row under the mode bar: floating it over the dice column
        overlapped on small screens */
     .top-bar {
         position: static;
@@ -894,7 +894,7 @@ body {
     }
 }
 
-/* Short landscape viewports (landscape phones — any width, ≤480px tall) */
+/* Short landscape viewports (landscape phones, any width, ≤480px tall) */
 @media (orientation: landscape) and (max-height: 480px) {
     :root {
         --die-size: 100px;
@@ -913,7 +913,7 @@ body {
         padding-bottom: calc(8px + var(--safe-bottom));
     }
 
-    /* In-flow left rail — the row layout leaves no top strip to pin to */
+    /* In-flow left rail: the row layout leaves no top strip to pin to */
     .mode-bar {
         position: static;
         flex-direction: column;
@@ -977,7 +977,7 @@ body {
         padding: 7px 12px;
     }
 
-    /* In-flow left column — cannot overlap the dice */
+    /* In-flow left column, cannot overlap the dice */
     .bottom-controls {
         position: static;
         transform: none;
@@ -1016,7 +1016,7 @@ body {
         font-size: 0.7rem;
     }
 
-    /* In-flow right rail — floating it over the center column overlapped */
+    /* In-flow right rail: floating it over the center column overlapped */
     .top-bar {
         position: static;
         order: 1;

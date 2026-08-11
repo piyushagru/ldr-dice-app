@@ -1,5 +1,5 @@
 // ─── Room ─────────────────────────────────────────────────────────────────────
-// Pages are served at /r/:roomId — all API calls are scoped to this room.
+// Pages are served at /r/:roomId, all API calls are scoped to this room.
 const roomId = (window.location.pathname.match(/^\/r\/([a-z0-9]+)/) || [])[1];
 if (!roomId) window.location.href = '/';
 
@@ -31,7 +31,7 @@ const rollConfig       = document.getElementById('rollConfig');
 let playerName = '';
 let isRolling  = false;
 
-// Interface mode: 'free' or a preset id — Pit-level state owned by the server
+// Interface mode: 'free' or a preset id; Pit-level state owned by the server
 const MODES = ['free', 'catan', 'cities-knights'];
 const MODE_NAMES = { free: 'Free Roll', catan: 'Catan', 'cities-knights': 'Cities & Knights' };
 let currentMode = 'free';
@@ -68,7 +68,7 @@ function snapToFace(el, diceKey, face) {
 }
 
 // ─── Core: free-tumble step (intermediate) ────────────────────────────────────
-// Spins on a random axis by ±90° or ±180° — visually interesting, doesn't need
+// Spins on a random axis by ±90° or ±180°, visually interesting, doesn't need
 // to land on a real face, so no gimbal issues.
 function tumbleStep(el, diceKey, durationMs) {
   const acc    = accumulated[diceKey];
@@ -542,7 +542,7 @@ function updateRollHistory(history) {
   }).join('');
 }
 
-// ─── Stats — delegated to stats.js (window.Stats) ────────────────────────────
+// ─── Stats: delegated to stats.js (window.Stats) ────────────────────────────
 // The stats panel tracks d6 distribution only, so other dice are skipped.
 function updateStats(rolls, sides) {
   if ((sides || 6) === 6) window.Stats.update(rolls);
@@ -573,7 +573,7 @@ shareBtn.addEventListener('click', async () => {
 });
 
 // Mode bar: the Pit's mode swaps the visible controls and governs the payload.
-// applyMode only updates the UI — the server owns the state (modeChanged SSE).
+// applyMode only updates the UI; the server owns the state (modeChanged SSE).
 function applyMode(mode) {
   currentMode = mode;
   modeBar.querySelectorAll('.mode-btn').forEach(btn => {

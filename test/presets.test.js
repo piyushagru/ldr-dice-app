@@ -71,7 +71,7 @@ describe('decorateRoll', () => {
       const result = dice.roll(presets.PRESETS['cities-knights'].spec);
       counts[presets.decorateRoll('cities-knights', result).event.face]++;
     }
-    // ship expected at 1/2, each gate at 1/6 — loose bounds (>7σ) to avoid flakes
+    // ship expected at 1/2, each gate at 1/6, loose bounds (>7σ) to avoid flakes
     assert.ok(counts.ship / ROLLS > 0.45 && counts.ship / ROLLS < 0.55,
       `ship ratio ${counts.ship / ROLLS}`);
     for (const gate of ['blue', 'green', 'yellow']) {

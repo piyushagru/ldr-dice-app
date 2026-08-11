@@ -71,7 +71,7 @@ window.Stats = (() => {
     fillEl.style.backgroundColor = color;
   }
 
-  // Stats panel collapse toggle — collapsed by default, choice persisted
+  // Stats panel collapse toggle: collapsed by default, choice persisted
   const OPEN_KEY = 'spicediceStatsOpen';
   if (localStorage.getItem(OPEN_KEY) === null && (localStorage.getItem('spicydiceStatsOpen') ?? localStorage.getItem('clattrStatsOpen')) !== null) localStorage.setItem(OPEN_KEY, localStorage.getItem('spicydiceStatsOpen') ?? localStorage.getItem('clattrStatsOpen'));
 
