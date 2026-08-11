@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "build:engine": "if command -v dune >/dev/null 2>&1; then cd ocaml && dune build; else echo 'build:engine: dune not found. One-time setup: opam switch create spicedice 5.2.1 && opam install dune js_of_ocaml js_of_ocaml-ppx, then eval $(opam env --switch=spicedice). Without the artifact, node server.js runs the behavior-identical pure-JS engine.' >&2; exit 1; fi",
     "test": "node --test"
   },
   "engines": {
