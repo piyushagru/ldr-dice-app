@@ -1,7 +1,9 @@
 <div align="center">
 
-<!-- Logo coming soon: drop the final artwork at docs/branding/logo.svg -->
+<!-- Logo coming soon: drop the final artwork at docs/branding/logo.svg, then
+     uncomment the line below.
 <img src="docs/branding/logo.svg" alt="SpiceDice logo" width="120" height="120">
+-->
 
 # SpiceDice
 
@@ -17,10 +19,9 @@
   4. pit-cnk.png     Cities & Knights mode (Barbarian Beacon) showing red + yellow dice + event die face
   5. two-windows.png  two browser windows side by side on the same Pit, showing the synced roll
 
-  Save them under docs/screenshots/ and embed like:
-  <img src="docs/screenshots/pit-free.png" alt="A Pit in Free Roll mode" width="720">
--->
+  Save them under docs/screenshots/ and uncomment the line below:
 <img src="docs/screenshots/pit-free.png" alt="A Pit in Free Roll mode, 3D d6 mid-tumble" width="720">
+-->
 
 </div>
 
