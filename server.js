@@ -158,7 +158,6 @@ function handleRequest(req, res) {
         return;
       }
 
-      // Game page for the room
       if (!action) {
         serveFile(res, path.join(__dirname, 'public', 'index.html'), 'text/html');
         return;
@@ -166,7 +165,6 @@ function handleRequest(req, res) {
 
       const room = getOrCreateRoom(roomId);
 
-      // Handle SSE endpoint (scoped to room)
       if (action === 'events') {
         res.writeHead(200, {
           'Content-Type': 'text/event-stream',
@@ -179,24 +177,20 @@ function handleRequest(req, res) {
         room.clients.add(res);
         room.gameState.connectedUsers = room.clients.size;
 
-        // Send current game state to the new client
         res.write(`data: ${JSON.stringify({
           type: 'gameState',
           data: room.gameState
         })}\n\n`);
 
-        // Broadcast user count update to the room
         broadcastSSE(room, {
           type: 'userCount',
           data: room.gameState.connectedUsers
         });
 
-        // Handle client disconnect
         req.on('close', () => removeClient(room, res));
         return;
       }
 
-      // Handle dice roll endpoint (scoped to room)
       if (action === 'roll' && req.method === 'POST') {
         readJsonBody(req, body => {
           try {
@@ -243,7 +237,6 @@ function handleRequest(req, res) {
 
             console.log(`[${roomId}] ${gameState.rolledBy} rolled ${result.notation}: [${result.rolls.join(', ')}] = ${result.total}`);
 
-            // Broadcast the roll to all clients in the room
             broadcastSSE(room, {
               type: 'diceRolled',
               data: { ...entry, rollHistory: gameState.rollHistory }
@@ -294,7 +287,6 @@ function handleRequest(req, res) {
       }
     }
 
-    // Create a new room and return its id
     if (pathname === '/api/rooms' && req.method === 'POST') {
       let roomId = generateRoomId();
       while (rooms.has(roomId)) roomId = generateRoomId();
@@ -304,7 +296,6 @@ function handleRequest(req, res) {
       return;
     }
 
-    // Landing page
     if (pathname === '/') {
       serveFile(res, path.join(__dirname, 'public', 'landing.html'), 'text/html');
       return;
@@ -328,7 +319,6 @@ function handleRequest(req, res) {
 
     const fullPath = path.join(__dirname, filePath);
 
-    // Determine content type
     const ext = path.extname(fullPath);
     const contentTypes = {
       '.html': 'text/html',
@@ -341,7 +331,6 @@ function handleRequest(req, res) {
     serveFile(res, fullPath, contentType);
 }
 
-// Function to try different ports if the default is in use
 function startServer(port) {
   http.createServer(handleRequest).listen(port, () => {
     console.log(`SpiceDice server running on port ${port}`);
@@ -356,7 +345,6 @@ function startServer(port) {
   });
 }
 
-// Read and serve a file from disk
 function serveFile(res, fullPath, contentType) {
   fs.readFile(fullPath, (err, data) => {
     if (err) {

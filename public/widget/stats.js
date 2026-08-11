@@ -9,7 +9,6 @@ window.Stats = (() => {
     allRolls:     []
   };
 
-  // DOM refs (panel elements)
   const el = {
     totalRolls:     () => document.getElementById('totalRolls'),
     avgRoll:        () => document.getElementById('avgRoll'),
@@ -33,11 +32,9 @@ window.Stats = (() => {
     el.totalRolls().textContent = state.totalRolls;
     if (state.totalRolls === 0) return;
 
-    // Average
     const sum = state.allRolls.reduce((a, b) => a + b, 0);
     el.avgRoll().textContent = (sum / state.allRolls.length).toFixed(2);
 
-    // Most / least rolled
     const counts   = state.distribution;
     const maxCount = Math.max(...Object.values(counts));
     const nonZero  = Object.values(counts).filter(c => c > 0);

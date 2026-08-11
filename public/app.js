@@ -350,7 +350,6 @@ async function animateAndReveal(data) {
 
   showRollTotal(data);
 
-  // Push to feed after dice settle
   window.RollFeed.push(rolls, total, count, rolledBy, timestamp, playerName, {
     sides, notation: data.notation, preset: data.preset,
     event: data.event, production: data.production
@@ -549,7 +548,6 @@ function updateStats(rolls, sides) {
 }
 
 // ─── Event listeners ──────────────────────────────────────────────────────────
-// Restore saved name
 const savedName = localStorage.getItem('dicePlayerName');
 if (savedName) { playerNameInput.value = savedName; playerName = savedName; }
 
@@ -558,7 +556,6 @@ playerNameInput.addEventListener('input', e => {
   localStorage.setItem('dicePlayerName', playerName);
 });
 
-// Room code + share link
 roomCode.textContent = roomId;
 shareBtn.addEventListener('click', async () => {
   try {
@@ -611,11 +608,9 @@ gameRollBtn.addEventListener('click', () => rollDice());
 
 applyMode('free');
 
-// Click to roll
 diceContainer.addEventListener('click', () => rollDice());
 cardContainer.addEventListener('click', () => rollDice());
 
-// Spacebar to roll
 document.addEventListener('keydown', e => {
   if (e.code === 'Space' && !isRolling && playerName) {
     e.preventDefault();
@@ -623,13 +618,11 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Enter in name field → focus dice
 playerNameInput.addEventListener('keypress', e => {
   if (e.key === 'Enter') diceContainer.focus();
 });
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-// Snap both dice to face 1 on load
 snapToFace(dice1, 'dice1', 1);
 snapToFace(dice2, 'dice2', 1);
 

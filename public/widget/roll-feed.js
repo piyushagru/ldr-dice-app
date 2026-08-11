@@ -9,10 +9,8 @@ window.RollFeed = (() => {
   const MAX_ROWS  = 3;
   const OPACITY   = [1, 0.5, 0.25]; // newest → oldest
 
-  // Internal history (newest first)
   const history = [];
 
-  // Container element (injected into #roll-feed)
   let container = null;
 
   function init() {
