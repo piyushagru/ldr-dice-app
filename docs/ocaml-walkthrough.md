@@ -1,6 +1,6 @@
 # Learning OCaml through PipWorks
 
-PipWorks — the SpiceDice dice engine — is now implemented in OCaml and compiled
+PipWorks, the SpiceDice dice engine, is now implemented in OCaml and compiled
 to JavaScript. This walkthrough teaches OCaml *through that code*: every
 concept is illustrated with the actual source in `ocaml/`, so you can read,
 break, rebuild, and experiment with a real working system instead of toy
@@ -8,7 +8,7 @@ examples.
 
 You should already know the app: `pipworks.js` exposes `parseNotation`,
 `validateSpec`, and `roll`, and `server.js` treats it as a black box. Nothing
-about that changed — only who does the thinking underneath.
+about that changed: only who does the thinking underneath.
 
 ---
 
@@ -24,11 +24,11 @@ about that changed — only who does the thinking underneath.
 | **js_of_ocaml** | Compiles OCaml bytecode to a single `.js` file | think of it as a transpiler backend |
 | **utop** | Interactive REPL with completion | the `node` REPL, but type-aware |
 
-This repo uses an opam switch named `clattr` (the app's historical name) with OCaml 5.2.1, dune, and
+This repo uses an opam switch named `spicedice` with OCaml 5.2.1, dune, and
 js_of_ocaml 6.4.1. A *switch* matters because OCaml libraries are compiled
 against one specific compiler version; switches keep projects from trampling
-each other. `opam exec --switch=clattr -- CMD` runs any command inside that
-universe, or run `eval $(opam env --switch=clattr)` once per shell to make
+each other. `opam exec --switch=spicedice -- CMD` runs any command inside that
+universe, or run `eval $(opam env --switch=spicedice)` once per shell to make
 `dune`, `ocaml`, and `utop` directly available.
 
 ### What each file in `ocaml/` does
@@ -37,14 +37,14 @@ universe, or run `eval $(opam env --switch=clattr)` once per shell to make
 |---|---|
 | `dune-project` | Marks the project root and pins the dune language version. One line. |
 | `dune` | Build rules: an `engine` library, a `bridge` executable compiled in `(modes js)`, and a rule that copies the compiled output to `pipworks_ocaml.js` and *promotes* it (writes it into the source dir so Node can `require` it). |
-| `engine.mli` | The **interface** of the engine — the only things the outside world may see. |
-| `engine.ml` | The **implementation** — types, parser, validation, rolling. Pure logic, no JavaScript anywhere. |
-| `bridge.ml` | The FFI layer — converts JS strings/numbers/functions to OCaml values and back, and exports the three functions to `module.exports`. |
-| `pipworks_ocaml.js` | The build artifact (~2.3 MB, includes the OCaml runtime). `pipworks.js` loads it when present. Regenerate with `dune build`; never edit by hand. |
+| `engine.mli` | The **interface** of the engine: the only things the outside world may see. |
+| `engine.ml` | The **implementation**: types, parser, validation, rolling. Pure logic, no JavaScript anywhere. |
+| `bridge.ml` | The FFI layer: converts JS strings/numbers/functions to OCaml values and back, and exports the three functions to `module.exports`. |
+| `pipworks_ocaml.js` | The build artifact (~2.3 MB, includes the OCaml runtime). Gitignored, a build product, never committed; Docker builds it on deploy. `pipworks.js` loads it when present. Regenerate with `dune build`; never edit by hand. |
 
 A key design point: `engine.ml` knows nothing about JavaScript, and
 `bridge.ml` contains no dice logic. That separation is tenant T5 (SOLID)
-expressed in OCaml — and it is also what makes the engine trivially testable
+expressed in OCaml, and it is also what makes the engine trivially testable
 in utop.
 
 ---
@@ -60,14 +60,14 @@ Everything in OCaml is a `let`. There is no `const`/`var` distinction because
 let max_dice = 10
 let max_modifier = 99
 ```
-— `ocaml/engine.ml:21-22`
+ `ocaml/engine.ml:21-22`
 
 Functions are also just `let` bindings whose value happens to be a function:
 
 ```ocaml
 let die_of_sides n = List.find_opt (fun d -> sides_of_die d = n) all_dice
 ```
-— `ocaml/engine.ml:35`
+ `ocaml/engine.ml:35`
 
 Inside the parser you'll see what looks like reassignment:
 
@@ -78,12 +78,12 @@ let count, i =
 in
 let i = skip_spaces i in
 ```
-— `ocaml/engine.ml:78-82`
+ `ocaml/engine.ml:78-82`
 
 This is **shadowing**, not mutation: each `let i = … in` introduces a *new*
 binding named `i` that hides the previous one. The old value still exists; it
 just has no name anymore. Compare with the JS fallback's `for` loop over a
-mutable `subtotal` (`pipworks.js:76-81`) — the OCaml version threads new
+mutable `subtotal` (`pipworks.js:76-81`): the OCaml version threads new
 values forward instead of overwriting old ones.
 
 ### 2.2 Variants and records
@@ -93,11 +93,11 @@ A **variant** is a type that says "exactly one of these, nothing else":
 ```ocaml
 type die = D4 | D6 | D8 | D10 | D12 | D20 | D100
 ```
-— `ocaml/engine.ml:1`
+ `ocaml/engine.ml:1`
 
 In JS, "supported dice" is a runtime array (`DICE_SIDES`, `pipworks.js:11`)
 and any number can pretend to be a die until `.includes()` says otherwise. In
-OCaml a `die` value *cannot* be a d7 — the illegal state is unrepresentable at
+OCaml a `die` value *cannot* be a d7: the illegal state is unrepresentable at
 compile time. That is the single biggest mindset shift OCaml asks of you.
 
 A **record** is a struct with named, typed fields:
@@ -109,9 +109,9 @@ type spec = {
   modifier : int;
 }
 ```
-— `ocaml/engine.ml:3-7`
+ `ocaml/engine.ml:3-7`
 
-Note `die : die` rather than `sides : int` — a validated spec holds a *proven*
+Note `die : die` rather than `sides : int`: a validated spec holds a *proven*
 die, not a number someone promises is fine. The `outcome` record
 (`ocaml/engine.ml:15-19`) plays the same role for roll results.
 
@@ -129,9 +129,9 @@ let sides_of_die = function
   | D20 -> 20
   | D100 -> 100
 ```
-— `ocaml/engine.ml:26-33`
+ `ocaml/engine.ml:26-33`
 
-Delete the `D100` line and rebuild — the compiler tells you exactly which case
+Delete the `D100` line and rebuild: the compiler tells you exactly which case
 you forgot. (Try it. Seriously. Watching the exhaustiveness checker catch you
 is the fastest way to trust it.)
 
@@ -146,16 +146,16 @@ let validate ~count ~sides ~modifier =
   | _, None, _ -> Error Invalid_sides
   | _, _, None -> Error Invalid_modifier
 ```
-— `ocaml/engine.ml:55-60`
+ `ocaml/engine.ml:55-60`
 
-`_` means "anything". The first `Some count, …` arm also *rebinds* the names —
+`_` means "anything". The first `Some count, …` arm also *rebinds* the names 
 inside that arm, `count` is the unwrapped `int`, shadowing the `float`
 parameter.
 
 The parser (`ocaml/engine.ml:62-102`) is pattern matching used in anger: the
 JS regex `/^\s*(\d{1,2})?\s*d\s*(\d{1,3})…$/i` (`pipworks.js:18`) became
 explicit character-by-character functions (`skip_spaces`, `digits`) whose
-results are matched to decide what comes next. More verbose than a regex —
+results are matched to decide what comes next. More verbose than a regex 
 and every branch, including the failure paths, is visible and typed.
 
 ### 2.4 `Result` and error handling
@@ -166,7 +166,7 @@ can fail says so in its type:
 ```ocaml
 val parse_notation : string -> (spec, error) result
 ```
-— `ocaml/engine.mli:28`
+ `ocaml/engine.mli:28`
 
 `result` is just a built-in variant: `Ok of 'a | Error of 'b`. The engine's
 error side is its own variant:
@@ -178,7 +178,7 @@ type error =
   | Invalid_sides
   | Invalid_modifier
 ```
-— `ocaml/engine.ml:9-13`
+ `ocaml/engine.ml:9-13`
 
 The JS API collapses all failures into `null`, so the OCaml engine is
 strictly *more* informative than its public surface. The collapse happens in
@@ -189,7 +189,7 @@ let or_null = function
   | Ok spec -> js_spec spec
   | Error _ -> inject Js.null
 ```
-— `ocaml/bridge.ml:13-15`
+ `ocaml/bridge.ml:13-15`
 
 This is the idiomatic shape: rich errors inside, lossy conversion only at the
 edge. If SpiceDice ever wanted error *messages* in its 400 responses, only
@@ -197,7 +197,7 @@ edge. If SpiceDice ever wanted error *messages* in its 400 responses, only
 
 ### 2.5 Modules and interfaces (`.mli`)
 
-Every `.ml` file is automatically a module — `engine.ml` defines the module
+Every `.ml` file is automatically a module: `engine.ml` defines the module
 `Engine` (capitalized file name), which is why `bridge.ml` says
 `Engine.parse_notation`.
 
@@ -207,12 +207,12 @@ is invisible to other modules. Compare:
 - `ocaml/engine.mli` exports `parse_notation`, `validate`, `roll`,
   `canonical_notation`, the types, and three constants.
 - `ocaml/engine.ml` *also* defines `all_dice`, `validate_parts`, and `as_int`
-  — try calling `Engine.as_int` from `bridge.ml`: the compiler refuses,
+   try calling `Engine.as_int` from `bridge.ml`: the compiler refuses,
   because the `.mli` doesn't mention it.
 
 This is the same encapsulation instinct as not exporting a helper from a JS
 module, but enforced by the type checker rather than by convention. Note the
-interface is a separate file you can read in one screen — it *is* the
+interface is a separate file you can read in one screen: it *is* the
 documentation.
 
 ### 2.6 Higher-order functions and the injected RNG (tenant T1)
@@ -226,12 +226,12 @@ let roll ~rng ~count ~sides ~modifier =
   let subtotal = List.fold_left ( + ) 0 rolls in
   { rolls; subtotal; total = subtotal + modifier }
 ```
-— `ocaml/engine.ml:104-107`
+ `ocaml/engine.ml:104-107`
 
-`~rng` is a labeled argument of type `int -> int` — a function passed as a
+`~rng` is a labeled argument of type `int -> int`: a function passed as a
 value, i.e. a higher-order function. `List.init count f` builds a list by
 calling `f` count times (like `Array.from({length: count}, f)`), and
-`List.fold_left ( + ) 0` is `reduce((a, b) => a + b, 0)` — note that even the
+`List.fold_left ( + ) 0` is `reduce((a, b) => a + b, 0)`, note that even the
 `+` operator is just a function you can pass around.
 
 The actual randomness is injected from JS, where `crypto.randomInt` lives:
@@ -240,7 +240,7 @@ The actual randomness is injected from JS, where `crypto.randomInt` lives:
 return ocaml.roll(spec.count, spec.sides, spec.modifier,
   (sides) => randomInt(1, sides + 1));
 ```
-— `pipworks.js:72-73`
+ `pipworks.js:72-73`
 
 So tenant T1 (crypto-fair, zero modulo bias) is preserved *by construction*:
 the OCaml side cannot roll on its own even by accident, because it has no RNG
@@ -253,7 +253,7 @@ direction:
 
 **JS → OCaml.** JS strings arrive as `Js.js_string Js.t` and must be
 converted: `Js.to_string text` (`ocaml/bridge.ml:17`). JS numbers arrive as
-OCaml `float`s — which is why `Engine.validate` takes floats and does its own
+OCaml `float`s, which is why `Engine.validate` takes floats and does its own
 `Number.isInteger`-style check (`as_int`, `ocaml/engine.ml:48-53`). A JS
 function arrives as an opaque value and is called with
 `Js.Unsafe.fun_call rng_fn [| inject s |]` (`ocaml/bridge.ml:23`).
@@ -268,7 +268,7 @@ Js.Unsafe.obj
     ("modifier", inject spec.Engine.modifier);
   |]
 ```
-— `ocaml/bridge.ml:5-11`
+ `ocaml/bridge.ml:5-11`
 
 Notice `sides_of_die` here: the internal representation (a `die` variant)
 converts back to the number the JS API promised. Lists become arrays with
@@ -295,7 +295,7 @@ present. `require('./pipworks').backend` tells you which engine you're on.
 ## 3. Exercises
 
 Graded ★ (gentle) to ★★★ (project). After each change: rebuild
-(section 4), then `npm test` — for behavior-preserving exercises all 19 tests
+(section 4), then `npm test`: for behavior-preserving exercises all 19 tests
 must still pass. Exercises that intentionally change behavior say so; do them
 on a scratch branch or revert after, since the shipped engine must stay
 byte-identical to the JS fallback.
@@ -309,7 +309,7 @@ deterministic here, and why is that useful for testing?
 **Ex 2 ★ — Break exhaustiveness.** Delete the `D100 -> 100` line from
 `sides_of_die` and run `dune build`. Read the error. Add a new die `D2` to the
 `die` type instead and follow the compiler errors until it builds
-(`all_dice`, `sides_of_die`). Run `npm test` — a test fails, because the JS
+(`all_dice`, `sides_of_die`). Run `npm test`, and a test fails, because the JS
 fallback and tests don't know d2. Revert. Lesson: the compiler walks you
 through a change, the *tests* guard cross-language parity.
 
@@ -393,10 +393,11 @@ Honest answer: the array. OCaml lets you mutate when it's the right tool.
 All commands run from `ocaml/`.
 
 ```bash
-# once per shell (or prefix every command with: opam exec --switch=clattr --)
-eval $(opam env --switch=clattr)
+# once per shell (or prefix every command with: opam exec --switch=spicedice --)
+eval $(opam env --switch=spicedice)
 
 dune build            # compile + regenerate pipworks_ocaml.js in ocaml/
+                      # (same as: npm run build:engine from the repo root)
 dune build -w         # watch mode: rebuild on every save
 dune clean            # remove _build AND the promoted pipworks_ocaml.js
 dune test             # run OCaml tests (after Ex 5)
@@ -433,4 +434,4 @@ Engine.roll ~rng:(fun s -> s) ~count:3 ~sides:20 ~modifier:0;;  (* always max *)
 `;;` ends a phrase in the REPL (not needed in source files). `#show Engine`
 prints `engine.mli` back at you — the interface really is the documentation.
 
-If `utop` is missing: `opam install --switch=clattr utop`.
+If `utop` is missing: `opam install --switch=spicedice utop`.

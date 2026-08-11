@@ -14,7 +14,7 @@ Steering file for AI-written code in this package. Every change MUST comply with
 | This file | **The SpiceDice Codex** |
 
 Use these names consistently in code comments, UI copy, and logs. API identifiers
-(`/r/`, `/api/rooms`, preset ids `catan` and `cities-knights`) are frozen contracts — do not rename them.
+(`/r/`, `/api/rooms`, preset ids `catan` and `cities-knights`) are frozen contracts: do not rename them.
 
 ## Tenants
 
@@ -23,7 +23,7 @@ Use these names consistently in code comments, UI copy, and logs. API identifier
   Clients never generate results. Never replace with `Math.random` or
   modulo-on-random-bytes.
 - **T2 Realistic feel.** Rolling animation is smooth and MUST deterministically
-  land on the server's result — zero lag or mismatch between the number shown
+  land on the server's result, with zero lag or mismatch between the number shown
   and the die face shown. Never display a result before or different from the
   settled face. The 3D d6 uses `landOnFace()` to guarantee this; result cards
   set the final value only on settle.
@@ -69,7 +69,7 @@ Palette and motion are defined once as CSS custom properties in
   letter-spacing.
 - Motion: subtle and purposeful. Ease-out landings (`--ease-out`), short
   slide/pop keyframes (< 500ms). Dice tumble timing lives in `app.js` and is
-  part of the T2 contract — do not "simplify" it.
+  part of the T2 contract: do not "simplify" it.
 - Interactive elements glow on hover/focus; never remove focus affordances.
 
 ## Architecture
@@ -87,9 +87,9 @@ test/                ← node --test unit tests for PipWorks and presets
 - **Pits model.** `rooms: Map<pitId, { id, gameState, clients: Set<res>, emptySince }>`.
   Pits are created on demand (`getOrCreateRoom`) so shared links survive
   restarts; empty Pits are swept after a 5-minute grace period. State is
-  in-memory only — that is a feature, not a gap. The game mode
+  in-memory only, and that is a feature, not a gap. The game mode
   (`gameState.currentMode`: `free` | `catan` | `cities-knights`, default
-  `free`) is Pit-level shared state — the server is the source of truth, never
+  `free`) is Pit-level shared state: the server is the source of truth, never
   the client. Any member switches it via `POST /r/:pitId/settings`
   `{mode, playerName}`; the server validates the mode, updates the Pit, and
   broadcasts `modeChanged` `{mode, changedBy}` (no broadcast when the mode is
@@ -99,7 +99,7 @@ test/                ← node --test unit tests for PipWorks and presets
   `: keepalive` comments every 25s. The initial `gameState` snapshot includes
   `currentMode`, so new joiners and reconnects land on the Pit's mode.
   Broadcast collects dead clients during iteration and removes them
-  after the loop — never mutate `clients` while iterating.
+  after the loop, and never mutate `clients` while iterating.
 - **Roll contract.** `POST /r/:pitId/roll` accepts, in priority order:
   `{preset}` > `{notation}` > `{spec:{count,sides,modifier}}` > legacy
   `{numDice}`. Supported dice: d4 d6 d8 d10 d12 d20 d100, ≤10 dice, |modifier| ≤99.
@@ -111,7 +111,7 @@ test/                ← node --test unit tests for PipWorks and presets
   one `PRESETS` entry + a frontend control. Catan (Robber Radar) and
   Cities & Knights (Barbarian Beacon) ship today. Barbarian Beacon rolls 3d6:
   red + yellow production dice plus an event die whose fair d6 result maps to
-  3× barbarian ship / blue gate / green gate / yellow gate — the mapping lives
+  3× barbarian ship / blue gate / green gate / yellow gate; the mapping lives
   only in `presets.js`.
 - **Engine boundary.** Everything random goes through PipWorks. The server
   treats it as a black box: `parseNotation`, `validateSpec`, `roll`.
@@ -125,10 +125,15 @@ is implemented in OCaml (`ocaml/engine.ml` + `engine.mli`, bridged by
 
 Rules for contributors (AI and human):
 
-- **Build.** From `ocaml/`: `opam exec --switch=clattr -- dune build`
-  (opam switch `clattr` — the app's historical name, kept because renaming a
-  switch is toolchain churn for zero benefit — OCaml 5.2.1, js_of_ocaml 6.x). The build promotes
+- **Build.** From `ocaml/`: `opam exec --switch=spicedice -- dune build`, or
+  `npm run build:engine` from the repo root (opam switch `spicedice`,
+  OCaml 5.2.1, js_of_ocaml 6.x). The build promotes
   `pipworks_ocaml.js` into `ocaml/`; never edit that artifact by hand.
+- **Artifact is a build product.** `ocaml/pipworks_ocaml.js` is never
+  committed (gitignored): only engine source and dune rules live in git.
+  The Docker image builds it from source on deploy (multi-stage
+  `Dockerfile`); local dev without the OCaml toolchain simply runs on the
+  JS fallback below.
 - **Fallback rule.** At startup `pipworks.js` requires
   `ocaml/pipworks_ocaml.js`; if the artifact is absent it transparently uses
   its own pure-JS implementation. `require('./pipworks').backend` reports
@@ -142,6 +147,14 @@ Rules for contributors (AI and human):
   `parseNotation` / `validateSpec` / `roll` from `pipworks.js`. JS type
   coercion (`Number()`, `??` defaults, `typeof` checks) stays in the JS
   wrapper, not in OCaml.
+
+## Keep the README updated
+
+`README.md` is part of the contract. Any change that alters the feature set,
+the quick start (commands, port, install steps), or API/mode names (routes,
+preset ids, SSE event types, dice limits) MUST update the corresponding
+README section in the same change. Never let the README describe behavior
+the code no longer has.
 
 ## Out of scope (do not add)
 
